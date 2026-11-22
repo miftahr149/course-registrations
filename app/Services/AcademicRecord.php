@@ -55,4 +55,14 @@ final class AcademicRecord
             ->where('grade_point', '>=', GradeScale::PASSING_GRADE_POINT)
             ->exists();
     }
+
+    /**
+     * A one-line summary for the student dashboard, e.g. "GPA 3.60 (max 24 SKS)".
+     */
+    public function summaryFor(User $student): string
+    {
+        $gpa = $this->gpaFor($student);
+
+        return sprintf('GPA %s (max %d SKS)', $this->gpaCalculator->format($gpa), $this->creditLimitFor($student));
+    }
 }
