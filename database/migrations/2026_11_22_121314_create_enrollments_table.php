@@ -17,9 +17,6 @@ return new class extends Migration
             $table->foreignId('course_section_id')->constrained()->cascadeOnDelete();
             $table->string('status')->default('enrolled');
             $table->timestamps();
-
-            // Last line of defense: a student can be in the same section only once.
-            $table->unique(['student_id', 'course_section_id']);
         });
     }
 
