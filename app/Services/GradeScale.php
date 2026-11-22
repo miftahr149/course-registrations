@@ -17,7 +17,7 @@ final class GradeScale
      * @var list<array{minimum: float, letter: string, point: float}>
      */
     private const array BOUNDARIES = [
-        ['minimum' => 85, 'letter' => 'A', 'point' => 4.00],
+        ['minimum' => 80, 'letter' => 'A', 'point' => 4.00],
         ['minimum' => 80, 'letter' => 'AB', 'point' => 3.50],
         ['minimum' => 70, 'letter' => 'B', 'point' => 3.00],
         ['minimum' => 65, 'letter' => 'BC', 'point' => 2.50],
