@@ -1,0 +1,108 @@
+# CI pipeline (week 1): Build -> Lint + Test
+# Runs on every pull request to master and on every push to master.
+# Each job is a separate check on the PR, so you can see which gate failed.
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+# Least privilege: the jobs only need to read the code.
+permissions:
+  contents: read
+
+# A new commit on the same branch cancels the old, now useless, run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # 1. BUILD: can the dependencies be installed and the frontend compiled?
+  #    If this fails, lint and test are skipped.
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict --no-check-publish
+
+      - uses: ./.github/actions/setup-php-app
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24' # same major version as local development
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+  # 2. LINT: static checks, the code is read but not run.
+  lint:
+    name: Lint
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php-app
+
+      - name: Code style (Pint)
+        run: vendor/bin/pint --test
+
+      # --error-format=github shows errors as annotations on the PR's changed lines.
+      - name: Static analysis (Larastan)
+        run: vendor/bin/phpstan analyse --no-progress --error-format=github
+
+  # 3. TEST: run the Pest test suite against a real MySQL.
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Service container: a throw-away MySQL that lives only for this job.
+    services:
+      mysql:
+        image: mysql:8.4 # same as compose.yaml
+        env:
+          MYSQL_DATABASE: course_registrations_testing # same name as phpunit.xml
+          MYSQL_USER: ci
+          MYSQL_PASSWORD: ci
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        # The job waits until MySQL answers, so tests don't start too early.
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot --silent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    # Dummy CI-only credentials (not secrets): the database is destroyed after the job.
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USERNAME: ci
+      DB_PASSWORD: ci
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-php-app
+
+      - name: Prepare .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests (Pest)
+        run: php artisan test
