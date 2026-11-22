@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\GradeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -12,4 +13,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/sections/{section}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     Route::get('/enrollments/{enrollment}', [EnrollmentController::class, 'show'])->name('enrollments.show');
     Route::delete('/enrollments/{enrollment}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
+
+    Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
+    Route::put('/enrollments/{enrollment}/grade', [GradeController::class, 'update'])->name('grades.update');
 });

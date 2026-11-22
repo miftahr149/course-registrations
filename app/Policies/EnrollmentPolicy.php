@@ -33,4 +33,12 @@ class EnrollmentPolicy
     {
         return $enrollment->student_id === $user->id;
     }
+
+    /**
+     * R5: only the lecturer who teaches the section may enter or change its grades.
+     */
+    public function grade(User $user, Enrollment $enrollment): bool
+    {
+        return $enrollment->section->lecturer_id === $user->id;
+    }
 }
