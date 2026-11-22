@@ -85,7 +85,7 @@ final class EnrollmentService
 
     private function ensureSeatIsAvailable(CourseSection $section): void
     {
-        if ($section->enrolledCount() >= $section->capacity) {
+        if ($section->enrolledCount() > $section->capacity) {
             throw new EnrollmentRejected('This section is full.');
         }
     }
