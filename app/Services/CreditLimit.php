@@ -23,6 +23,9 @@ final class CreditLimit
             return self::NEW_STUDENT;
         }
 
-        return $gpa >= self::HIGH_GPA_THRESHOLD ? self::HIGH_GPA : self::LOW_GPA;
+        if($gpa>=self::HIGH_GPA_THRESHOLD){
+            return self::HIGH_GPA;
+        }
+        return self::LOW_GPA;
     }
 }
