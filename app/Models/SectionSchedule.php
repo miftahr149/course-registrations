@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property MeetingType $meeting_type
+ */
 #[Fillable(['course_section_id', 'day_of_week', 'start_time', 'end_time', 'meeting_type', 'room'])]
 class SectionSchedule extends Model
 {
