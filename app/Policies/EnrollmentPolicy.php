@@ -39,6 +39,6 @@ class EnrollmentPolicy
      */
     public function grade(User $user, Enrollment $enrollment): bool
     {
-        return $enrollment->section->lecturer_id === $user->id;
+        return $user->isLecturer();
     }
 }
