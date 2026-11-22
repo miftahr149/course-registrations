@@ -1,0 +1,34 @@
+# Composite action = a reusable group of steps.
+# Every job runs on a fresh VM, so each job needs PHP + vendor/ again.
+# Keeping these steps in one place means the 3 jobs cannot drift apart.
+name: Set up PHP app
+description: Install PHP 8.5 and the Composer dependencies (with cache)
+
+runs:
+  using: composite
+  steps:
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.5' # keep the same as docker/php/Dockerfile and production
+        extensions: pdo_mysql, bcmath, intl, zip
+        tools: composer:v2
+        coverage: none
+
+    - name: Get Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+    # Caches the downloaded packages (not vendor/). The key changes when
+    # composer.lock changes, so a new dependency always gets a fresh download.
+    - name: Cache Composer downloads
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+        restore-keys: composer-${{ runner.os }}-
+
+    - name: Install Composer dependencies
+      shell: bash
+      run: composer install --no-interaction --prefer-dist --no-progress
