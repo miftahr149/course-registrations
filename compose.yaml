@@ -42,6 +42,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
+      # Scripts here run only on the first start (empty volume): creates the test database.
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       # $$ = literal $ for compose; the variable is expanded inside the container.
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]

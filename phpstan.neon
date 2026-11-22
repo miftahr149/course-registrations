@@ -1,0 +1,13 @@
+# Larastan = PHPStan + Laravel rules. Config follows the Larastan README:
+# https://github.com/larastan/larastan
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+
+parameters:
+    paths:
+        - app/
+
+    # 0 (loosest) .. 10 (strictest). 5 is the README default: catches unknown
+    # methods/properties and wrong argument types without too much noise.
+    level: 5
