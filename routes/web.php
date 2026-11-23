@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\TeachingController;
 use Illuminate\Support\Facades\Route;
 
 // "/" is the login page. Naming it "login" makes the auth middleware send guests here.
@@ -16,6 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
+    // Student: browse open sections, then enroll in or drop them.
+    Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::post('/sections/{section}/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     Route::get('/enrollments/{enrollment}', [EnrollmentController::class, 'show'])->name('enrollments.show');
@@ -23,4 +27,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
     Route::put('/enrollments/{enrollment}/grade', [GradeController::class, 'update'])->name('grades.update');
+
+    // Lecturer: the sections they teach and each section's students.
+    Route::get('/teaching', [TeachingController::class, 'index'])->name('teaching.index');
+    Route::get('/teaching/sections/{section}', [TeachingController::class, 'show'])->name('teaching.show');
 });

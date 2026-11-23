@@ -21,6 +21,9 @@ class LoginController extends Controller
         ['role' => 'Lecturer', 'name' => 'Dr. Sari', 'email' => 'sari@example.com'],
         ['role' => 'Student', 'name' => 'Raka', 'email' => 'raka@example.com'],
         ['role' => 'Student', 'name' => 'Dewi', 'email' => 'dewi@example.com'],
+        ['role' => 'Student', 'name' => 'Andi', 'email' => 'andi@example.com'],
+        ['role' => 'Student', 'name' => 'Putri', 'email' => 'putri@example.com'],
+        ['role' => 'Student', 'name' => 'Fajar', 'email' => 'fajar@example.com'],
     ];
 
     public function create(): View

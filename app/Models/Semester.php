@@ -35,4 +35,12 @@ class Semester extends Model
     {
         return $this->hasMany(CourseSection::class);
     }
+
+    /**
+     * The semester students are registering for now, if one is open.
+     */
+    public static function current(): ?self
+    {
+        return self::query()->where('is_active', true)->first();
+    }
 }

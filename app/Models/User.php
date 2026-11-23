@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\EnrollmentStatus;
 use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -54,6 +55,18 @@ class User extends Authenticatable
     public function enrollments(): HasMany
     {
         return $this->hasMany(Enrollment::class, 'student_id');
+    }
+
+    /**
+     * The student's current (not dropped) enrollments in one semester.
+     *
+     * @return HasMany<Enrollment, $this>
+     */
+    public function activeEnrollmentsIn(Semester $semester): HasMany
+    {
+        return $this->enrollments()
+            ->where('status', EnrollmentStatus::Enrolled)
+            ->whereHas('section', fn ($section) => $section->where('semester_id', $semester->id));
     }
 
     public function isAdmin(): bool

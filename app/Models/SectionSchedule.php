@@ -38,4 +38,16 @@ class SectionSchedule extends Model
     {
         return $this->belongsTo(CourseSection::class, 'course_section_id');
     }
+
+    /**
+     * A short human-readable form, e.g. "Mon 08:00-10:30 (lecture, R-101)".
+     */
+    public function label(): string
+    {
+        $day = [1 => 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][$this->day_of_week];
+
+        $details = implode(', ', array_filter([$this->meeting_type->value, $this->room]));
+
+        return sprintf('%s %s-%s (%s)', $day, substr($this->start_time, 0, 5), substr($this->end_time, 0, 5), $details);
+    }
 }
