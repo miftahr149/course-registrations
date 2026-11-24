@@ -3,6 +3,7 @@
 @section('title', 'Log in')
 
 @section('content')
+<div class="mx-auto max-w-md pt-8">
     <h1 class="mb-6 text-center text-2xl font-semibold">Course Registration</h1>
 
     <form method="POST" action="{{ route('login.store') }}" class="space-y-4 rounded-lg bg-white p-6 shadow">
@@ -55,4 +56,5 @@
             </table>
         </section>
     @endif
+</div>
 @endsection

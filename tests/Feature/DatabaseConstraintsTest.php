@@ -38,5 +38,5 @@ test('the database rejects a second grade for the same enrollment', function () 
 test('the demo seeder runs on a fresh database', function () {
     $this->seed();
 
-    expect(CourseSection::count())->toBe(4);
+    expect(CourseSection::count())->toBe(12);
 });

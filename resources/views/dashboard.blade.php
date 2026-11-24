@@ -9,16 +9,15 @@
 
         @if ($user->isStudent())
             <ul class="list-inside list-disc text-sm">
+                <li><a class="text-blue-600 hover:underline" href="{{ route('sections.index') }}">Register for sections</a></li>
                 <li><a class="text-blue-600 hover:underline" href="{{ route('enrollments.index') }}">My enrollments (KRS)</a></li>
                 <li><a class="text-blue-600 hover:underline" href="{{ route('grades.index') }}">My grades (KHS)</a></li>
             </ul>
         @elseif ($user->isLecturer())
-            <p class="text-sm">You teach {{ $user->taughtSections()->count() }} section(s) and can enter grades for their students.</p>
+            <p class="text-sm">You teach {{ $user->taughtSections()->count() }} section(s).</p>
+            <ul class="list-inside list-disc text-sm">
+                <li><a class="text-blue-600 hover:underline" href="{{ route('teaching.index') }}">My sections and grading</a></li>
+            </ul>
         @endif
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="rounded bg-gray-200 px-4 py-2 text-sm hover:bg-gray-300">Log out</button>
-        </form>
     </div>
 @endsection
